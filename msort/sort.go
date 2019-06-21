@@ -212,3 +212,76 @@ func mergeSortHelper(nums []int, low, high int) {
 func MergeSort(nums []int) {
 	mergeSortHelper(nums, 0, len(nums)-1)
 }
+
+//radix sort
+func RadixSort(strs []string) {
+	if len(strs) < 2 {
+		return
+	}
+	const BUCKET = 256
+	strLen := len(strs[0])
+	buckets := make([][]string, BUCKET) //create buckets
+
+	for i := strLen - 1; i >= 0; i-- {
+		//put strings into buckets
+		for _, s := range strs {
+			buckets[s[i]] = append(buckets[s[i]], s)
+		}
+
+		var idx int
+		for _, b := range buckets {
+			//build string array with buckets
+			for _, s := range b {
+				strs[idx] = s
+				idx++
+			}
+
+			buckets = make([][]string, BUCKET) //reset buckets
+		}
+	}
+}
+
+func CountingRadixSort(strs []string) {
+	if len(strs) < 2 {
+		return
+	}
+	const BUCKET = 256
+	strLen := len(strs[0])
+	arrLen := len(strs)
+
+	in := strs //reference to input array
+	out := make([]string, len(strs))
+
+	//bucket sort on the i-th char of all strings
+	for pos := strLen - 1; pos >= 0; pos-- {
+		count := make([]int, BUCKET+1)
+
+		//iterate over all strings
+		for j := 0; j < arrLen; j++ {
+			count[in[j][pos]+1]++ //the i-th char of the j-th string
+		}
+
+		//accumlate counting of buckets
+		for b := 1; b <= BUCKET; b++ {
+			count[b] += count[b-1]
+		}
+
+		//put back string at the right place
+		for j := 0; j < arrLen; j++ {
+			out[count[in[j][pos]]] = in[j]
+			count[in[j][pos]]++
+		}
+
+		//exchange bucket
+		in, out = out, in
+	}
+
+	//if odd num of passes, in is buffer while out is arr, copy buffer
+	//	to arr
+	if strLen%2 == 1 {
+		copy(out[:], in[:])
+	}
+
+	//copy to origin array
+	copy(strs[:], out[:])
+}

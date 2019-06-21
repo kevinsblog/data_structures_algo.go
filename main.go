@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"sort"
 
 	. "./comm"
@@ -28,4 +29,13 @@ func sortDemo() {
 	nums = []int{4, 6, 3, 1, 2}
 	sort.Ints(nums)
 	PrintIntSlice("std sort", nums)
+
+	strs := []string{"edr", "aed", "yui", "hyi", "cgs", "efr", "yuc"}
+	//msort.RadixSort(strs)
+	msort.CountingRadixSort(strs)
+	fmt.Println("aft sort", strs)
+
+	strs = []string{"edr", "aed", "yui", "hyi", "cgs", "efr", "yuc"}
+	sort.Strings(strs)
+	fmt.Println("std sort", strs)
 }
